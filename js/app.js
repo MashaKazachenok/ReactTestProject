@@ -1,4 +1,4 @@
-var my_news = [
+var myNews = [
 {
 author: 'Sasha Petrov',
 text: 'Yesterday evening, when the Princess came home...'
@@ -13,6 +13,19 @@ text: 'Absolutely free. Download...'
 }
 ];
 
+var Article = React.createClass({
+render: function() {
+var data = this.props.data;
+
+return (
+	<div className="article">
+<p className="newsAuthor">{data.author}:</p>
+<p className="newsText">{data.text}</p>
+</div>
+);
+}
+});
+
 var News = React.createClass({
 render: function() {
 var data = this.props.data;
@@ -21,8 +34,7 @@ if (data.length > 0) {
 newsTemplate = data.map(function(item, index) {
 return (
 <div key={index}>
-<p className="news__author">{item.author}:</p>
-<p className="news__text">{item.text}</p>
+<Article data={item} />
 </div>
 )
 })
@@ -32,17 +44,7 @@ newsTemplate = <p>Unfortunately there is no news</p>
 return (
 <div className="news">
 {newsTemplate}
-<strong className={data.length > 0 ? '':'none'}>Total news: {data.length}</strong>
-</div>
-);
-}
-});
-
-var Comments = React.createClass({
-render: function() {
-return (
-<div className="comments">
-No news - nothing to comment.
+<strong className={'newsCount ' + (data.length > 0 ? '':'none') }>Total news: {data.length}</strong>
 </div>
 );
 }
@@ -52,9 +54,9 @@ var App = React.createClass({
 render: function() {
 return (
 <div className="app">
-Hello everyone, I am an App component! I can display news.
-<News data={my_news} />
-<Comments />
+<h3>News</h3>
+<News data={myNews} />
+
 </div>
 );
 }

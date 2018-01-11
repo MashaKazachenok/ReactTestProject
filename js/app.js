@@ -79,11 +79,33 @@ return (
 }
 });
 
+var TestInput = React.createClass({
+
+onBtnClickHandler: function() {
+alert(ReactDOM.findDOMNode(this.refs.myTestInput).value)
+},
+render: function() {
+return (
+<div>
+<input
+className='testInput'
+defaultValue=''
+onChange={this.onChangeHandler}
+placeholder='input value'
+ref='myTestInput'
+/>
+<button onClick={this.onBtnClickHandler}>Show alert</button>
+</div>
+);
+}
+});
+
 var App = React.createClass({
 render: function() {
 return (
 <div className="app">
 <h3>News</h3>
+<TestInput />
 <News data={myNews} />
 
 </div>

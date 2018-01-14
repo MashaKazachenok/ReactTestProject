@@ -79,23 +79,63 @@ return (
 }
 });
 
-var TestInput = React.createClass({
-
-onBtnClickHandler: function() {
-alert(ReactDOM.findDOMNode(this.refs.myTestInput).value)
+var Add = React.createClass({
+getInitialState: function() { //устанавливаем начальное состояние (state)
+return {
+agreeNotChecked: true,
+authorIsEmpty: true,
+textIsEmpty: true
+};
+},
+componentDidMount: function() {
+ReactDOM.findDOMNode(this.refs.author).focus();
+},
+onBtnClickHandler: function(e) {
+e.preventDefault();
+var author = ReactDOM.findDOMNode(this.refs.author).value;
+var text = ReactDOM.findDOMNode(this.refs.text).value;
+alert(author + '\n' + text);
+},
+onCheckRuleClick: function(e) {
+this.setState({agreeNotChecked: !this.state.agreeNotChecked});
+},
+onFieldChange: function(fieldName, e) {
+if (e.target.value.trim().length > 0) {
+this.setState({[''+fieldName]:false})
+} else {
+this.setState({[''+fieldName]:true})
+}
 },
 render: function() {
 return (
-<div>
+<form className='add cf'>
 <input
-className='testInput'
+type='text'
+className='addAuthor'
 defaultValue=''
-onChange={this.onChangeHandler}
-placeholder='input value'
-ref='myTestInput'
+placeholder='Your name'
+onChange={this.onFieldChange.bind(this, 'authorIsEmpty')}
+ref='author'
 />
-<button onClick={this.onBtnClickHandler}>Show alert</button>
-</div>
+<textarea
+className='addText'
+defaultValue=''
+placeholder='Text your news'
+onChange={this.onFieldChange.bind(this, 'textIsEmpty')}
+ref='text'
+></textarea>
+<label className='addCheckrule'>
+<input type='checkbox' defaultChecked={false} ref='checkrule' onChange={this.onCheckRuleClick}/>I agree with rules.
+</label>
+<button
+className='addBtn'
+onClick={this.onBtnClickHandler}
+ref='alertButton'
+disabled={this.state.agreeNotChecked || this.state.authorIsEmpty || this.state.textIsEmpty}
+>
+Show alert
+</button>
+</form>
 );
 }
 });
@@ -105,7 +145,7 @@ render: function() {
 return (
 <div className="app">
 <h3>News</h3>
-<TestInput />
+<Add />
 <News data={myNews} />
 
 </div>

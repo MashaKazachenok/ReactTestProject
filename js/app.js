@@ -16,6 +16,8 @@ bigText: 'Actually paid.'
 }
 ];
 
+window.ee = new EventEmitter();
+
 var Article = React.createClass({
 propTypes: {
 data: React.PropTypes.shape({
@@ -80,7 +82,7 @@ return (
 });
 
 var Add = React.createClass({
-getInitialState: function() { //устанавливаем начальное состояние (state)
+getInitialState: function() {
 return {
 agreeNotChecked: true,
 authorIsEmpty: true,
@@ -93,8 +95,20 @@ ReactDOM.findDOMNode(this.refs.author).focus();
 onBtnClickHandler: function(e) {
 e.preventDefault();
 var author = ReactDOM.findDOMNode(this.refs.author).value;
-var text = ReactDOM.findDOMNode(this.refs.text).value;
-alert(author + '\n' + text);
+var textEl = ReactDOM.findDOMNode(this.refs.text);
+var text = textEl.value;
+
+var item = [{
+author: author,
+text: text,
+bigText: '...'
+}];
+
+window.ee.emit('News.add', item);
+
+textEl.value = '';
+this.setState({textIsEmpty: true});
+
 },
 onCheckRuleClick: function(e) {
 this.setState({agreeNotChecked: !this.state.agreeNotChecked});
@@ -133,7 +147,7 @@ onClick={this.onBtnClickHandler}
 ref='alertButton'
 disabled={this.state.agreeNotChecked || this.state.authorIsEmpty || this.state.textIsEmpty}
 >
-Show alert
+Add news
 </button>
 </form>
 );
@@ -141,12 +155,27 @@ Show alert
 });
 
 var App = React.createClass({
+getInitialState: function() {
+return {
+news: myNews
+};
+},
+componentDidMount: function() {
+var self = this;
+window.ee.addListener('News.add', function(item) {
+var nextNews = item.concat(self.state.news);
+self.setState({news: nextNews});
+});
+},
+componentWillUnmount: function() {
+
+},
 render: function() {
 return (
 <div className="app">
 <h3>News</h3>
 <Add />
-<News data={myNews} />
+<News data={this.state.news} />
 
 </div>
 );
